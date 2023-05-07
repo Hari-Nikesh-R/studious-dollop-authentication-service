@@ -8,11 +8,11 @@ public interface Urls {
     String USER_URL = "/user";
     String FETCH_ID = "/fetch-id";
     String INFO = "/info";
+    String GET_ALL_USER = "/get-all";
     String VALIDATE_EMAIL = "/validate/email";
-    String UPDATE_PASSWORD = "/update/password";
     String CHANGE_PASSWORD = "/change/password";
     String UPDATE_PROFILE = "/update/profile";
-    String PASSCODE = "/passcode";
+    String GET_EMAIL = "/get-email";
 
 
 

@@ -5,8 +5,5 @@ import java.util.regex.Pattern;
 
 
 public abstract class Configuration {
-   // public static String AUTHORITIES_KEY = STUDENT;
-
-
 
 }

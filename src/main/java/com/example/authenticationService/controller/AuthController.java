@@ -1,7 +1,6 @@
 package com.example.authenticationService.controller;
 
-import com.example.authenticationService.config.JwtTokenUtil;
-import com.example.authenticationService.dtos.BaseResponse;
+import com.example.authenticationService.Utils.JwtTokenUtil;
 import com.example.authenticationService.dtos.JwtRequest;
 import com.example.authenticationService.dtos.JwtResponse;
 import com.example.authenticationService.services.impl.JwtUserDetailsService;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.example.authenticationService.Utils.Constants.*;
@@ -34,11 +32,11 @@ public class AuthController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
-    @RequestMapping(value = "/login",method = RequestMethod.GET)
-    public String loginUser()
-    {
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String loginUser() {
         return "Came inside Login";
     }
+
     @RequestMapping(value = LOGIN, method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
@@ -50,15 +48,17 @@ public class AuthController {
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
+
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
+            throw new Exception(USER_DISABLED, e);
         } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
+            throw new Exception(INVALID_CREDENTIALS, e);
         }
     }
+
     @RequestMapping(value = REFRESH_TOKEN, method = RequestMethod.GET)
     public ResponseEntity<?> refreshToken(HttpServletRequest request) throws Exception {
         // From the HttpRequest get the claims
@@ -68,8 +68,6 @@ public class AuthController {
         String token = jwtTokenUtil.doGenerateRefreshToken(expectedMap, expectedMap.get(SUB).toString());
         return ResponseEntity.ok(new JwtResponse(token));
     }
-
-
 
     public Map<String, Object> getMapFromIoJsonwebtokenClaims(DefaultClaims claims) {
         Map<String, Object> expectedMap = new HashMap<>();

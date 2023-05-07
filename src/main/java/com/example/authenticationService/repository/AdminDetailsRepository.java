@@ -19,10 +19,8 @@ public interface AdminDetailsRepository extends CrudRepository<AdminDetails,Inte
 
     Optional<AdminDetails> findByUsername(String userName);
 
-    @Query(value = "select authority from admin_details where email = ?1", nativeQuery = true)
-    Optional<Boolean> findByAuthority(String email);
-    @Query(value = "select id from admin_details where email = ?1",nativeQuery = true)
-    Optional<Integer> fetchId(String email);
+    @Query(value = "select id from admin_details where username = ?1",nativeQuery = true)
+    Optional<Integer> fetchId(String username);
 
 
 }

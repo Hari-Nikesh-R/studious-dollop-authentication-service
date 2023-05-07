@@ -57,10 +57,8 @@ public class WebConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().
                 antMatchers("/authenticate").permitAll().
                 antMatchers("/user/validate/email").permitAll().
-                antMatchers("/user/change/password").permitAll().
                 antMatchers("/register/user").permitAll().
-                antMatchers("/register/verify").permitAll().
-                antMatchers("/swagger-ui.html").permitAll().
+                antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll().
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
@@ -69,8 +67,8 @@ public class WebConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Add a filter to validate the tokens with every request
-            httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    }
+}
 

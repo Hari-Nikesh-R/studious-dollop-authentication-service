@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Authority
-{
+public class Authority {
     private String email;
     private boolean isAuthorized;
 }

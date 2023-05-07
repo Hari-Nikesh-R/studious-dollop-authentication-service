@@ -13,5 +13,5 @@ public class EmailDetails {
     private String recipient;
     private String msgBody;
     private String subject;
-    private Map<String,String> code;
+    private Map<String, String> code;
 }

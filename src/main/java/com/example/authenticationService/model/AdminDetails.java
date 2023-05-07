@@ -1,6 +1,7 @@
 package com.example.authenticationService.model;
 
 import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 

@@ -7,13 +7,14 @@ import com.example.authenticationService.model.AdminDetails;
 import com.example.authenticationService.repository.AdminDetailsRepository;
 import com.example.authenticationService.services.FetchInfoService;
 import com.example.authenticationService.services.RegisterService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
+@Slf4j
 @Service
 public class AdminServiceImpl implements RegisterService<AdminDetails>, FetchInfoService<AdminDetails, Integer> {
     @Autowired
@@ -27,23 +28,21 @@ public class AdminServiceImpl implements RegisterService<AdminDetails>, FetchInf
                 return null;
             }
             String password = Generator.generateNonce();
-            System.out.println(password);
-            adminDetails.setUsername(adminDetails.getEmail().substring(0,4).toLowerCase()+"veacy"+ (int) (Math.random() * (9999 - 1000 + 1)) + 1000);
+            log.info("Generated Password: "+password);
+                System.out.println(password);
+            String username = adminDetails.getEmail().substring(0,4).toLowerCase()+"veacy"+ (int) (Math.random() * (9999 - 1000 + 1)) + 1000;
+            adminDetails.setUsername(username);
+            log.info("Generated username: "+username);
             adminDetails.setPasswordHash(bCryptPasswordEncoder.encode(password));
             adminDetails.setIsActive(true);
             adminDetails.setIsDeleted(false);
+            log.info("Successfully saved");
             return adminDetailsRepository.save(adminDetails);
     }
 
-
     @Override
-    public List<AdminDetails> getAllInfo() {
-        return adminDetailsRepository.findAll();
-    }
-
-    @Override
-    public Integer getId(String email) {
-        Optional<Integer> optionalAdminId = adminDetailsRepository.fetchId(email);
+    public Integer getId(String username) {
+        Optional<Integer> optionalAdminId = adminDetailsRepository.fetchId(username);
         return optionalAdminId.orElse(null);
     }
 
@@ -52,6 +51,7 @@ public class AdminServiceImpl implements RegisterService<AdminDetails>, FetchInf
         Optional<AdminDetails>  optionalAdminDetails = adminDetailsRepository.findById(id);
         if(optionalAdminDetails.isPresent())
         {
+            log.info("Admin Details: "+optionalAdminDetails.get());
             optionalAdminDetails.get().setPasswordHash("");
             return optionalAdminDetails.get();
         }
@@ -59,19 +59,28 @@ public class AdminServiceImpl implements RegisterService<AdminDetails>, FetchInf
     }
 
     @Override
-    public AdminDetails getInfoByEmail(String email) {
-        Optional<AdminDetails> optionalAdminDetails = adminDetailsRepository.findByEmail(email);
+    public List<AdminDetails> getAllUser() {
+        return adminDetailsRepository.findAll();
+    }
+
+    @Override
+    public AdminDetails getInfoByUsername(String username) {
+        Optional<AdminDetails> optionalAdminDetails = adminDetailsRepository.findByUsername(username);
         return optionalAdminDetails.orElse(null);
     }
 
 
     @Override
     public String forgotPasswordReset(UpdatePassword updatePassword) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         Optional<AdminDetails> optionalAdminDetails = adminDetailsRepository.findByEmail(updatePassword.getEmail());
         if(optionalAdminDetails.isPresent())
         {
-            optionalAdminDetails.get().setPasswordHash(updatePassword.getPassword());
+            String password = Generator.generateNonce();
+            log.info("Updated Password: "+password);
+            optionalAdminDetails.get().setPasswordHash(bCryptPasswordEncoder.encode(password));
             adminDetailsRepository.save(optionalAdminDetails.get());
+            log.info("Password updated successfully");
             return Constants.UPDATE_PASSWORD;
         }
         return null;
@@ -85,8 +94,10 @@ public class AdminServiceImpl implements RegisterService<AdminDetails>, FetchInf
             details.setEmail(optionalAdminDetails.get().getEmail());
             details.setPasswordHash(optionalAdminDetails.get().getPasswordHash());
             BeanUtils.copyProperties(details, optionalAdminDetails.get());
+            log.info("Profile updated with BeanUtils: "+optionalAdminDetails.get());
             return adminDetailsRepository.save(optionalAdminDetails.get());
         }
+        log.warn("User not found");
         return null;
     }
 

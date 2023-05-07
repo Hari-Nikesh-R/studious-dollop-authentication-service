@@ -10,12 +10,15 @@ import java.util.Collection;
 public class AuthDto extends User {
 
     private String role;
+
     public AuthDto(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
     }
+
     public String getRole() {
         return role;
     }
+
     public void setRole(String role) {
         this.role = role;
     }

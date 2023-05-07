@@ -2,6 +2,7 @@ package com.example.authenticationService.services.impl;
 
 import com.example.authenticationService.model.AdminDetails;
 import com.example.authenticationService.repository.AdminDetailsRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static com.example.authenticationService.Utils.Constants.*;
-
+@Slf4j
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
@@ -26,9 +27,9 @@ public class JwtUserDetailsService implements UserDetailsService {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         AdminDetails adminDetails = new AdminDetails();
         Optional<AdminDetails> adminCred = adminDetailsRepository.findByUsername(username);
-        System.out.println(username+" "+adminCred.isPresent());
         if (adminCred.isPresent()) {
             if (adminCred.get().getUsername().equals(username)) {
+                log.info("Valid User: "+username);
                 return new User(username, adminCred.get().getPasswordHash(), new ArrayList<>());
             }
         }
