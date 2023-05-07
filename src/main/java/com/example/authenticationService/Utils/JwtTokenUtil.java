@@ -1,4 +1,4 @@
-package com.example.authenticationService.config;
+package com.example.authenticationService.Utils;
 
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -25,16 +25,11 @@ public class JwtTokenUtil implements Serializable {
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
     private int refreshExpirationDateInMs;
-    private int jwtExpirationInMs;
 
     @Value("${jwt.secret}")
     private String secret;
 
 
-    @Value("${jwt.expirationDateInMs}")
-    public void setJwtExpirationInMs(int jwtExpirationInMs) {
-        this.jwtExpirationInMs = jwtExpirationInMs;
-    }
     @Value("${jwt.refreshExpirationDateInMs}")
     public void setRefreshExpirationDateInMs(int refreshExpirationDateInMs) {
         this.refreshExpirationDateInMs = refreshExpirationDateInMs;
@@ -55,7 +50,7 @@ public class JwtTokenUtil implements Serializable {
         return claimsResolver.apply(claims);
     }
 
-    //for retrieveing any information from token we will need the secret key
+    //for retrieving any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
@@ -97,21 +92,5 @@ public class JwtTokenUtil implements Serializable {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-
-//     UsernamePasswordAuthenticationToken getAuthentication(final String token, final Authentication existingAuth, final UserDetails userDetails) {
-//
-//        final JwtParser jwtParser = Jwts.parser().setSigningKey(secret);
-//
-//        final Jws claimsJws = jwtParser.parseClaimsJws(token);
-//
-//        final Claims claims = (Claims) claimsJws.getBody();
-//
-////        final Collection authorities =
-////                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-////                        .map(SimpleGrantedAuthority::new)
-////                        .collect(Collectors.toList());
-//
-//        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
-//    }
 
 }
