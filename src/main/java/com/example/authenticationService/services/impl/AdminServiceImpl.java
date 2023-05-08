@@ -92,6 +92,8 @@ public class AdminServiceImpl implements RegisterService<AdminDetails>, FetchInf
         if(optionalAdminDetails.isPresent()) {
             details.setId(optionalAdminDetails.get().getId());
             details.setEmail(optionalAdminDetails.get().getEmail());
+            details.setIsDeleted(optionalAdminDetails.get().getIsDeleted());
+            details.setIsActive(optionalAdminDetails.get().getIsActive());
             details.setPasswordHash(optionalAdminDetails.get().getPasswordHash());
             BeanUtils.copyProperties(details, optionalAdminDetails.get());
             log.info("Profile updated with BeanUtils: "+optionalAdminDetails.get());
